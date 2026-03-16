@@ -141,7 +141,161 @@ The app uses relative URLs, so the same process serves both UI and API in develo
 
 ## AI Workflow
 
-AI tools were used as a development assistant for scaffolding, component structure, and tests. Where they accelerated work: initial Next.js + React Query setup, Tailwind and component markup, and test structure for `JobStatusBadge` and `JobStatusFilter`. Manual engineering decisions included: using Next.js API routes instead of MSW for the mock (simpler for a single full-stack app), centralizing server state in a single `useJobs` hook, implementing cache updates on retry instead of refetch-only, and choosing a custom toast and row highlight instead of a third-party toast library. The README and architecture were written and refined by hand to reflect actual code and tradeoffs.
+AI tools were used as a development assistant for scaffolding, component structure, design decision making and tests.
+
+### Tools used and their purpose
+1. **ChatGPT**: 
+    - For converting PRD into easy to breakdown tasks
+    - For generating detailed prompts for the tasks created in the step above to pass on to Cursor
+    - For iterating on design
+    - For deciding additional UI/UX features for making the app more usable beyond the basic scope of the PRD
+    - For generating initial version of `README.md` and iterating on it
+2. **Cursor**: 
+    - For initial scaffolding of the project with Next.js, Tailwind CSS, React Query, APIs, next-themes and icons library
+    - For generating components required by the project
+    - For solving bugs
+    - For generating tests for a couple of components
+
+### Where they accelerated work
+- Initial Next.js + React Query setup
+- Tailwind and component markup
+- Test structure for `JobStatusBadge` and `JobStatusFilter`
+- Setting up dark mode option
+
+
+### Manual engineering decisions included
+- Using Next.js API routes instead of MSW for the mock (simpler for a single full-stack app)
+- Centralizing server state in a single `useJobs` hook
+- Implementing cache updates on retry instead of refetch-only
+- Choosing a custom toast and row highlight instead of a third-party toast library.
+
+ The README and architecture were refined by hand to reflect actual code and tradeoffs.
+ 
+ 
+ ### Overview of some prompts used
+ 1. Set up a new project with Typescript and Next.js. Scaffold all files needed for this. Also, set up a git repo for this project along with react query for my app
+ 
+ 2. Reorganise the codebase such that default route is the jobs page. Remove the page.tsx from app folder.
+ 
+ 3. Create a clean internal dashboard UI design system for a React + TypeScript + Tailwind application called "Job Queue Dashboard".
+    Design philosophy:
+    - clean
+    - minimal
+    - internal SRE / ops tool style
+    - information dense but readable
+    - neutral palette
+    
+    Global page layout:
+    - background: slate-50
+    - page padding: 32px
+    - centered container max width: 1100px
+    
+    Typography:
+    - page title: text-2xl font-semibold text-slate-900
+    - table headers: text-sm font-medium text-slate-600
+    - table body text: text-sm text-slate-800
+    - metadata text: text-xs text-slate-500
+    - job id: font-mono text-xs
+    
+    Card style:
+    - background: white
+    - border: border-slate-200
+    - border radius: rounded-lg
+    - shadow: shadow-sm
+    - padding: p-6
+    
+    Table style:
+    - wrapper: border border-slate-200 rounded-lg overflow-hidden
+    - header background: bg-slate-100
+    - row border: border-t border-slate-200
+    - row hover: hover:bg-slate-50
+    - cell padding: px-4 py-3
+    - align text left
+    
+    Status badge component:
+    - base style: px-2 py-1 text-xs font-medium rounded-full
+    
+    Status colors:
+    Running:
+    - bg-blue-100
+    - text-blue-700
+    
+    Queued:
+    - bg-gray-100
+    - text-gray-700
+    
+    Failed:
+    - bg-red-100
+    - text-red-700
+    
+    Completed:
+    - bg-green-100
+    - text-green-700
+    
+    Retry button style:
+    - px-3 py-1.5
+    - text-sm font-medium
+    - rounded-md
+    - bg-slate-900
+    - text-white
+    - hover:bg-slate-700
+    - transition-colors
+    
+    Disabled button:
+    - bg-slate-300
+    - text-white
+    - cursor-not-allowed
+    
+    Dropdown filter style:
+    - border border-slate-300
+    - rounded-md
+    - px-3 py-2
+    - text-sm
+    - bg-white
+    - focus:ring-2 focus:ring-blue-500
+    - focus:outline-none
+    
+    Spinner style:
+    - animate-spin
+    - rounded-full
+    - h-5 w-5
+    - border-b-2 border-slate-900
+    
+    Toast styles:
+    Success toast:
+    - bg-green-50
+    - text-green-800
+    - border border-green-200
+    
+    Error toast:
+    - bg-red-50
+    - text-red-800
+    - border border-red-200
+    
+    Empty state style:
+    - text-center
+    - py-12
+    - text-slate-500
+    
+    Spacing rules:
+    - section spacing: mb-6
+    - card spacing: p-6
+    - table padding: px-4 py-3
+
+    Ensure consistent Tailwind styling across all components. Use TypeScript types. Do not include inline styles.
+    Make these changes in individual CSS files, so if you are styling jobtable, create a new jobtable.css in styles folder and it should only contain the styles for that component, unless something is being shared among other components
+
+4. Add tests for a couple of components
+
+5. The current home page looks very basic, let's add a sidepanel. It should be collapsible, have a image on top of the panel to show client logo (the image can be added later, so put a placeholder here), and bottom of the panel should show user's avatar, use first chars of their initials for this, and name. Hovering over it should show logout option (which won't work, just make it visual). Within panel, below the logo, add option of Jobs Queue and make it selected. Selection could be in a shade of blue color. Make it same as job card hover color. Every such option should have an icon and a name, and on collapse it should only show the icon and hovering on icon should show name of the option in a tooltip
+
+6. At the top of the dashboard, let's add a component for showing counts of each job type. Like this:
+        --------------------------------------------
+        Running | Queued | Failed | Completed
+        2       | 3      | 1      | 4
+        --------------------------------------------
+    Each type can be a card, and use color scheme for each card like the ones defined in table itself.
+7. In the sidepanel, towards the bottom, add an option for toggling dark mode for the entire app. let's try to implement a dark mode version for the app
 
 ---
 
