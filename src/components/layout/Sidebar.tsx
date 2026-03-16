@@ -42,7 +42,7 @@ type NavItem = {
      <aside
       className={
         "flex flex-col border-r border-slate-200 bg-white transition-all duration-200 ease-in-out h-full dark:border-slate-800 dark:bg-slate-900 " +
-        (collapsed ? "w-20" : "w-64")
+        (collapsed ? "w-20" : "w-48")
       }
      >
       <div className="flex h-16 items-center justify-between px-4 border-b border-slate-200 dark:border-slate-800">
