@@ -2,11 +2,11 @@
 
 @layer components {
   .page-root {
-    @apply min-h-screen bg-slate-50 text-slate-900 flex justify-center px-8 py-8;
+    @apply h-full bg-slate-50 text-slate-900 flex justify-center;
   }
 
   .page-container {
-    @apply w-full max-w-[1100px] space-y-6;
+    @apply w-full max-w-[1100px] space-y-6 h-full flex flex-col;
   }
 
   .page-header {

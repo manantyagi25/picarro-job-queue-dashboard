@@ -108,8 +108,8 @@ export default function JobsPage() {
 
         <JobStatusSummary jobs={jobsQuery.data ?? []} />
 
-        <section className="section">
-          <div className="card flex flex-col gap-4">
+        <section className="section flex-1 flex flex-col min-h-0">
+          <div className="card flex flex-col gap-4 flex-1 min-h-0">
             <div className="flex items-center justify-between">
               <p className="metadata-text">
                 Showing {filteredJobs.length} job

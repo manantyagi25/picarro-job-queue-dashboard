@@ -2,7 +2,7 @@
 
 @layer components {
   .job-table-wrapper {
-    @apply border border-slate-200 rounded-lg overflow-hidden;
+    @apply border border-slate-200 rounded-lg overflow-hidden flex-1 min-h-0 overflow-y-auto;
   }
 
   .job-table {
@@ -10,7 +10,7 @@
   }
 
   .job-table-header {
-    @apply bg-slate-100;
+    @apply bg-slate-100 sticky top-0;
   }
 
   .job-table-header-cell {
@@ -18,11 +18,11 @@
   }
 
   .job-table-body-row {
-    @apply border-t border-slate-200 hover:bg-slate-50;
+    @apply border-t border-slate-200 hover:bg-slate-50 hover:cursor-pointer hover:shadow-md transition-all duration-200 ease-in-out h-[56px];
   }
 
   .job-table-cell {
-    @apply px-4 py-3 align-top;
+    @apply px-4 py-3 align-middle;
   }
 
   .job-id-cell {
@@ -38,7 +38,7 @@
   }
 
   .job-actions-cell {
-    @apply job-table-cell text-right;
+    @apply job-table-cell text-right align-middle;
   }
 }
 
