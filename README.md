@@ -182,11 +182,26 @@ Realistic next steps that could be added with more time:
 
 ---
 
-## Deployment
+### Live demo
 
-There is no deployment configuration (e.g. Vercel or Netlify) in the repository. To deploy:
+The app is deployed on Vercel here:  
+[https://picarro-job-queue-dashboard.vercel.app/](https://picarro-job-queue-dashboard.vercel.app/)
 
-- Build: `npm run build`
-- Run: `npm run start` (or host the `.next` output on any Node-compatible platform).
+### Deploying to Vercel
 
-For a platform like Vercel, connect the repo and use the default Next.js build and start commands.
+This project is configured as a standard Next.js app, so Vercel can use the default settings.
+
+1. **Connect the repo to Vercel**
+   - Go to [Vercel](https://vercel.com/), import the GitHub repository, and select the default **Next.js** framework preset.
+
+2. **Build & output settings**
+   - Build command: `npm run build` (or `npm run vercel-build`, which is an alias).
+   - Output directory: `.next`
+   - Install command: `npm install` (or `pnpm install`/`yarn install` if you switch package managers).
+
+3. **Environment variables**
+   - No environment variables are required for the current mock-API setup. If you later add real backend integration, configure the necessary variables in Vercel’s **Project Settings → Environment Variables**.
+
+4. **Production deployments**
+   - Every push to the main branch (or whatever branch you configure) will trigger a new production deployment.
+   - Vercel also creates preview deployments for pull requests.
