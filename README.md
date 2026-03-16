@@ -290,12 +290,12 @@ AI tools were used as a development assistant for scaffolding, component structu
 5. The current home page looks very basic, let's add a sidepanel. It should be collapsible, have a image on top of the panel to show client logo (the image can be added later, so put a placeholder here), and bottom of the panel should show user's avatar, use first chars of their initials for this, and name. Hovering over it should show logout option (which won't work, just make it visual). Within panel, below the logo, add option of Jobs Queue and make it selected. Selection could be in a shade of blue color. Make it same as job card hover color. Every such option should have an icon and a name, and on collapse it should only show the icon and hovering on icon should show name of the option in a tooltip
 
 6. At the top of the dashboard, let's add a component for showing counts of each job type. Like this:
-        --------------------------------------------
+        
         Running | Queued | Failed | Completed
-        2       | 3      | 1      | 4
         --------------------------------------------
+        2       | 3      | 1      | 4
     Each type can be a card, and use color scheme for each card like the ones defined in table itself.
-7. In the sidepanel, towards the bottom, add an option for toggling dark mode for the entire app. let's try to implement a dark mode version for the app
+8. In the sidepanel, towards the bottom, add an option for toggling dark mode for the entire app. let's try to implement a dark mode version for the app
 
 ---
 
