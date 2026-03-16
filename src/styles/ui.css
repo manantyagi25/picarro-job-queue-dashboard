@@ -2,7 +2,7 @@
 
 @layer components {
   .page-root {
-    @apply h-full bg-slate-50 text-slate-900 flex justify-center;
+    @apply h-full bg-slate-50 text-slate-900 flex justify-center dark:bg-slate-900 dark:text-slate-50;
   }
 
   .page-container {
@@ -14,11 +14,11 @@
   }
 
   .page-title {
-    @apply text-2xl font-semibold text-slate-900;
+    @apply text-2xl font-semibold text-slate-900 dark:text-slate-50;
   }
 
   .page-subtitle {
-    @apply text-sm text-slate-600;
+    @apply text-sm text-slate-600 dark:text-slate-300;
   }
 
   .section {
@@ -26,31 +26,31 @@
   }
 
   .card {
-    @apply bg-white border border-slate-200 rounded-lg shadow-sm p-6;
+    @apply bg-white border border-slate-200 rounded-lg shadow-sm p-6 dark:bg-slate-800 dark:border-slate-700;
   }
 
   .metadata-text {
-    @apply text-xs text-slate-500;
+    @apply text-xs text-slate-500 dark:text-slate-400;
   }
 
   .empty-state {
-    @apply text-center py-12 text-slate-500 text-sm;
+    @apply text-center py-12 text-slate-500 text-sm dark:text-slate-400;
   }
 
   .retry-button {
-    @apply inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-md bg-slate-900 text-white hover:bg-slate-700 transition-colors;
+    @apply inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-md bg-slate-900 text-white hover:bg-slate-700 transition-colors dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200;
   }
 
   .retry-button:disabled {
-    @apply bg-slate-300 text-white cursor-not-allowed;
+    @apply bg-slate-300 text-white cursor-not-allowed dark:bg-slate-600;
   }
 
   .filter-label {
-    @apply flex items-center gap-2 text-sm text-slate-700;
+    @apply flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200;
   }
 
   .filter-select {
-    @apply border border-slate-300 rounded-md px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none;
+    @apply border border-slate-300 rounded-md px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-slate-800 dark:border-slate-600 dark:text-slate-50 dark:focus:ring-slate-300;
   }
 
   .spinner {

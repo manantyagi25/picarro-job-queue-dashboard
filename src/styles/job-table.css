@@ -2,7 +2,7 @@
 
 @layer components {
   .job-table-wrapper {
-    @apply border border-slate-200 rounded-lg overflow-hidden flex-1 min-h-0 overflow-y-auto;
+    @apply border border-slate-200 rounded-lg overflow-hidden flex-1 min-h-0 overflow-y-auto dark:border-slate-700;
   }
 
   .job-table {
@@ -10,15 +10,15 @@
   }
 
   .job-table-header {
-    @apply bg-slate-100 sticky top-0;
+    @apply bg-slate-100 sticky top-0 dark:bg-slate-800;
   }
 
   .job-table-header-cell {
-    @apply px-4 py-3 text-sm font-medium text-slate-600 text-left;
+    @apply px-4 py-3 text-sm font-medium text-slate-600 text-left dark:text-slate-100;
   }
 
   .job-table-body-row {
-    @apply border-t border-slate-200 hover:bg-slate-50 hover:cursor-pointer hover:shadow-md transition-all duration-200 ease-in-out h-[56px];
+    @apply border-t border-slate-200 hover:bg-slate-50 hover:cursor-pointer hover:shadow-md transition-all duration-200 ease-in-out h-[56px] dark:border-slate-700 dark:hover:bg-slate-800;
   }
 
   .job-table-cell {
@@ -26,15 +26,15 @@
   }
 
   .job-id-cell {
-    @apply job-table-cell font-mono text-xs text-slate-700;
+    @apply job-table-cell font-mono text-xs text-slate-700 dark:text-slate-300;
   }
 
   .job-type-cell {
-    @apply job-table-cell text-sm text-slate-800;
+    @apply job-table-cell text-sm text-slate-800 dark:text-slate-200;
   }
 
   .job-created-at-cell {
-    @apply job-table-cell text-sm text-slate-800;
+    @apply job-table-cell text-sm text-slate-800 dark:text-slate-100;
   }
 
   .job-actions-cell {

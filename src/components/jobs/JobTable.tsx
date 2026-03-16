@@ -34,7 +34,7 @@ export function JobTable({
               <button
                 type="button"
                 onClick={onToggleCreatedAtSort}
-                className="inline-flex items-center gap-1 text-slate-600 hover:text-slate-900"
+                className="inline-flex items-center gap-1 text-slate-600 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-50"
               >
                 <span>Created At</span>
                 {createdAtSortDirection === "asc" ? (
