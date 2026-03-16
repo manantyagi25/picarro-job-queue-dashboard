@@ -8,7 +8,14 @@ export let MOCK_JOBS: Job[] = [
   { id: "job-005", type: "sync", status: "Failed", createdAt: "2026-03-12T08:20:00Z" },
   { id: "job-006", type: "notify", status: "Completed", createdAt: "2026-03-12T08:25:00Z" },
   { id: "job-007", type: "export", status: "Queued", createdAt: "2026-03-12T08:30:00Z" },
-  { id: "job-008", type: "sync", status: "Running", createdAt: "2026-03-12T08:35:00Z" }
+  { id: "job-008", type: "sync", status: "Running", createdAt: "2026-03-12T08:35:00Z" },
+  { id: "job-009", type: "notify", status: "Completed", createdAt: "2026-03-12T09:25:00Z" },
+  { id: "job-010", type: "export", status: "Queued", createdAt: "2026-03-12T09:30:00Z" },
+  { id: "job-011", type: "sync", status: "Failed", createdAt: "2026-03-12T10:35:00Z" },
+  { id: "job-012", type: "sync", status: "Running", createdAt: "2026-03-12T08:35:00Z" },
+  { id: "job-013", type: "notify", status: "Completed", createdAt: "2026-03-12T09:25:00Z" },
+  { id: "job-014", type: "export", status: "Queued", createdAt: "2026-03-12T09:30:00Z" },
+  { id: "job-015", type: "sync", status: "Failed", createdAt: "2026-03-12T10:35:00Z" }
 ];
 
 export function updateJobStatus(id: string, status: Job["status"]): Job | undefined {
