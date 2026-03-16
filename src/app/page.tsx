@@ -26,6 +26,31 @@ export default function JobsPage() {
   const [createdAtSortDirection, setCreatedAtSortDirection] = useState<
     "asc" | "desc"
   >("desc");
+  const [now, setNow] = useState<number>(() => Date.now());
+
+  const lastUpdatedLabel = useMemo(() => {
+    if (!jobsQuery.dataUpdatedAt) return "Never updated";
+    const diffMs = now - jobsQuery.dataUpdatedAt;
+    const diffSeconds = Math.floor(diffMs / 1000);
+    const diffMinutes = Math.floor(diffSeconds / 60);
+    const diffHours = Math.floor(diffMinutes / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffSeconds < 10) return "just now";
+    if (diffSeconds < 60) return `${diffSeconds} seconds ago`;
+    if (diffMinutes < 60)
+      return `${diffMinutes} minute${diffMinutes === 1 ? "" : "s"} ago`;
+    if (diffHours < 24)
+      return `${diffHours} hour${diffHours === 1 ? "" : "s"} ago`;
+    return `${diffDays} day${diffDays === 1 ? "" : "s"} ago`;
+  }, [jobsQuery.dataUpdatedAt, now]);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setNow(Date.now());
+    }, 30000);
+    return () => clearInterval(id);
+  }, []);
 
   const filteredJobs = useMemo(() => {
     if (!jobsQuery.data) return [];
@@ -119,11 +144,28 @@ export default function JobsPage() {
   return (
     <main className="page-root">
       <div className="page-container">
-        <header className="page-header">
-          <h1 className="page-title">Job Queue Dashboard</h1>
-          <p className="page-subtitle">
-            Monitor running, queued, failed, and completed jobs in one place.
-          </p>
+        <header className="mb-4 rounded-lg border border-slate-200 bg-slate-100 px-4 py-3 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+          <div className="flex items-center justify-between gap-4">
+            <div className="page-header">
+              <h1 className="page-title">Job Queue Dashboard</h1>
+              <p className="page-subtitle">
+                Monitor running, queued, failed, and completed jobs in one place.
+              </p>
+            </div>
+            <div className="flex flex-col items-end gap-2">
+              <button
+                type="button"
+                onClick={() => jobsQuery.refetch()}
+                disabled={jobsQuery.isFetching}
+                className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800"
+              >
+                {jobsQuery.isFetching ? "Refreshing…" : "Refresh data"}
+              </button>
+              {/* <p className="text-[11px] italic text-slate-500 dark:text-slate-400 whitespace-nowrap">
+                Last updated {lastUpdatedLabel}
+              </p> */}
+            </div>
+          </div>
         </header>
 
         <JobStatusSummary jobs={jobsQuery.data ?? []} />
