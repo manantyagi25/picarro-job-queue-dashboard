@@ -23,7 +23,7 @@ export default function RootLayout({
             <div className="flex h-screen w-full bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-50 overflow-hidden">
               <Sidebar />
               <main className="flex-1 flex justify-center px-8 py-8">
-                <div className="w-full max-w-[1100px] space-y-6">
+                <div className="w-full space-y-6">
                   {children}
                 </div>
               </main>
