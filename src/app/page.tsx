@@ -7,6 +7,7 @@ import {
   type JobStatusFilterValue
 } from "@/components/jobs/JobStatusFilter";
 import { JobTable } from "@/components/jobs/JobTable";
+import { JobStatusSummary } from "@/components/jobs/JobStatusSummary";
 import { Spinner } from "@/components/ui/Spinner";
 
 type ToastState =
@@ -104,6 +105,8 @@ export default function JobsPage() {
             Monitor running, queued, failed, and completed jobs in one place.
           </p>
         </header>
+
+        <JobStatusSummary jobs={jobsQuery.data ?? []} />
 
         <section className="section">
           <div className="card flex flex-col gap-4">
