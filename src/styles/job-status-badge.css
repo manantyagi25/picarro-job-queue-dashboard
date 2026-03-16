@@ -2,7 +2,7 @@
 
 @layer components {
   .job-status-badge {
-    @apply px-2 py-1 text-xs font-medium rounded-full;
+    @apply inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full;
   }
 
   .job-status-running {

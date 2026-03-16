@@ -12,6 +12,10 @@
     @apply bg-slate-50 text-slate-900 antialiased overflow-hidden dark:bg-slate-900 dark:text-slate-50;
   }
 
+  .animate-spin-slow {
+    animation: spin 1.2s linear infinite;
+  }
+
   code {
     @apply font-mono text-xs;
   }
