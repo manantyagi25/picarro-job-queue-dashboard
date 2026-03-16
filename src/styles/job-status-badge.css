@@ -1,0 +1,24 @@
+@tailwind components;
+
+@layer components {
+  .job-status-badge {
+    @apply px-2 py-1 text-xs font-medium rounded-full;
+  }
+
+  .job-status-running {
+    @apply bg-blue-100 text-blue-700;
+  }
+
+  .job-status-queued {
+    @apply bg-gray-100 text-gray-700;
+  }
+
+  .job-status-failed {
+    @apply bg-red-100 text-red-700;
+  }
+
+  .job-status-completed {
+    @apply bg-green-100 text-green-700;
+  }
+}
+

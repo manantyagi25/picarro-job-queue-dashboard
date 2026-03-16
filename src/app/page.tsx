@@ -58,37 +58,33 @@ export default function JobsPage() {
 
   if (showInitialSpinner) {
     body = (
-      <div className="flex flex-col items-center justify-center gap-3 py-16 text-slate-300">
+      <div className="flex flex-col items-center justify-center gap-3 py-16">
         <Spinner />
-        <p className="text-sm">Loading jobs…</p>
+        <p className="metadata-text">Loading jobs…</p>
       </div>
     );
   } else if (showLoadError) {
     body =
       loadRetryCount === 0 ? (
-        <div className="flex flex-col items-center justify-center gap-3 py-16 text-slate-300">
-          <p className="text-sm">Unable to load jobs.</p>
+        <div className="flex flex-col items-center justify-center gap-3 py-16">
+          <p className="metadata-text">Unable to load jobs.</p>
           <button
             type="button"
             onClick={handleRetryLoad}
-            className="rounded-md border border-slate-700 bg-slate-900 px-4 py-2 text-xs font-medium text-slate-100 shadow-sm hover:bg-slate-800"
+            className="retry-button"
           >
             Retry
           </button>
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center gap-3 py-16 text-slate-300">
-          <p className="text-sm">
+        <div className="flex flex-col items-center justify-center gap-3 py-16">
+          <p className="metadata-text">
             Unable to load jobs — please try again later.
           </p>
         </div>
       );
   } else if (filteredJobs.length === 0) {
-    body = (
-      <div className="flex flex-col items-center justify-center gap-3 py-16 text-slate-300">
-        <p className="text-sm">No jobs found</p>
-      </div>
-    );
+    body = <div className="empty-state">No jobs found</div>;
   } else {
     body = (
       <JobTable
@@ -100,30 +96,35 @@ export default function JobsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-50 flex flex-col items-center px-4 py-8">
-      <div className="w-full max-w-5xl space-y-6">
-        <header className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <div>
-            <h1 className="text-3xl font-semibold tracking-tight">
-              Job Queue Dashboard
-            </h1>
-            <p className="text-sm text-slate-300">
-              Monitor running, queued, failed, and completed jobs in one place.
-            </p>
-          </div>
-          <JobStatusFilter value={statusFilter} onChange={setStatusFilter} />
+    <main className="page-root">
+      <div className="page-container">
+        <header className="page-header">
+          <h1 className="page-title">Job Queue Dashboard</h1>
+          <p className="page-subtitle">
+            Monitor running, queued, failed, and completed jobs in one place.
+          </p>
         </header>
 
-        {body}
+        <section className="section">
+          <div className="card flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+              <p className="metadata-text">
+                Showing {filteredJobs.length} job
+                {filteredJobs.length === 1 ? "" : "s"}
+              </p>
+              <JobStatusFilter value={statusFilter} onChange={setStatusFilter} />
+            </div>
+
+            {body}
+          </div>
+        </section>
       </div>
 
       {toast && (
-        <div className="pointer-events-none fixed bottom-6 right-6 z-50">
+        <div className="toast-container">
           <div
-            className={`pointer-events-auto rounded-lg border px-4 py-3 text-sm shadow-lg ${
-              toast.type === "success"
-                ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-100"
-                : "border-red-500/40 bg-red-500/10 text-red-100"
+            className={`toast ${
+              toast.type === "success" ? "toast-success" : "toast-error"
             }`}
           >
             {toast.message}

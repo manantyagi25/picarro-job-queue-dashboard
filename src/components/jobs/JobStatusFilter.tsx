@@ -1,4 +1,5 @@
 import type { JobStatus } from "@/types/job";
+import "@/styles/job-status-filter.css";
 
 export type JobStatusFilterValue = "All" | JobStatus;
 
@@ -17,10 +18,10 @@ const OPTIONS: JobStatusFilterValue[] = [
 
 export function JobStatusFilter({ value, onChange }: JobStatusFilterProps) {
   return (
-    <label className="flex items-center gap-2 text-sm text-slate-300">
+    <label className="job-status-filter-label">
       <span>Status:</span>
       <select
-        className="rounded-md border border-slate-700 bg-slate-900 px-2 py-1 text-xs text-slate-100 shadow-sm outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-400"
+        className="job-status-filter-select"
         value={value}
         onChange={(event) =>
           onChange(event.target.value as JobStatusFilterValue)

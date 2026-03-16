@@ -1,0 +1,44 @@
+@tailwind components;
+
+@layer components {
+  .job-table-wrapper {
+    @apply border border-slate-200 rounded-lg overflow-hidden;
+  }
+
+  .job-table {
+    @apply min-w-full text-sm text-left;
+  }
+
+  .job-table-header {
+    @apply bg-slate-100;
+  }
+
+  .job-table-header-cell {
+    @apply px-4 py-3 text-sm font-medium text-slate-600 text-left;
+  }
+
+  .job-table-body-row {
+    @apply border-t border-slate-200 hover:bg-slate-50;
+  }
+
+  .job-table-cell {
+    @apply px-4 py-3 align-top;
+  }
+
+  .job-id-cell {
+    @apply job-table-cell font-mono text-xs text-slate-700;
+  }
+
+  .job-type-cell {
+    @apply job-table-cell text-sm text-slate-800;
+  }
+
+  .job-created-at-cell {
+    @apply job-table-cell text-sm text-slate-800;
+  }
+
+  .job-actions-cell {
+    @apply job-table-cell text-right;
+  }
+}
+

@@ -1,0 +1,80 @@
+@tailwind components;
+
+@layer components {
+  .page-root {
+    @apply min-h-screen bg-slate-50 text-slate-900 flex justify-center px-8 py-8;
+  }
+
+  .page-container {
+    @apply w-full max-w-[1100px] space-y-6;
+  }
+
+  .page-header {
+    @apply flex flex-col gap-2;
+  }
+
+  .page-title {
+    @apply text-2xl font-semibold text-slate-900;
+  }
+
+  .page-subtitle {
+    @apply text-sm text-slate-600;
+  }
+
+  .section {
+    @apply mb-6;
+  }
+
+  .card {
+    @apply bg-white border border-slate-200 rounded-lg shadow-sm p-6;
+  }
+
+  .metadata-text {
+    @apply text-xs text-slate-500;
+  }
+
+  .empty-state {
+    @apply text-center py-12 text-slate-500 text-sm;
+  }
+
+  .retry-button {
+    @apply inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-md bg-slate-900 text-white hover:bg-slate-700 transition-colors;
+  }
+
+  .retry-button:disabled {
+    @apply bg-slate-300 text-white cursor-not-allowed;
+  }
+
+  .filter-label {
+    @apply flex items-center gap-2 text-sm text-slate-700;
+  }
+
+  .filter-select {
+    @apply border border-slate-300 rounded-md px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none;
+  }
+
+  .spinner {
+    @apply inline-block animate-spin rounded-full h-5 w-5 border-b-2 border-slate-900;
+  }
+
+  .spinner-sm {
+    @apply h-5 w-5;
+  }
+
+  .toast-container {
+    @apply pointer-events-none fixed bottom-6 right-6 z-50;
+  }
+
+  .toast {
+    @apply pointer-events-auto rounded-lg border px-4 py-3 text-sm shadow-lg;
+  }
+
+  .toast-success {
+    @apply bg-green-50 text-green-800 border-green-200;
+  }
+
+  .toast-error {
+    @apply bg-red-50 text-red-800 border-red-200;
+  }
+}
+

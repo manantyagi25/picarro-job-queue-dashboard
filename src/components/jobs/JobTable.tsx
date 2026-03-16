@@ -2,6 +2,7 @@ import type { Job } from "@/types/job";
 import { formatJobCreatedAt } from "@/utils/date";
 import { JobStatusBadge } from "./JobStatusBadge";
 import { Spinner } from "@/components/ui/Spinner";
+import "@/styles/job-table.css";
 
 interface JobTableProps {
   jobs: Job[];
@@ -11,43 +12,39 @@ interface JobTableProps {
 
 export function JobTable({ jobs, isRetryingId, onRetry }: JobTableProps) {
   return (
-    <div className="overflow-hidden rounded-xl border border-slate-800 bg-slate-950/60">
-      <table className="min-w-full divide-y divide-slate-800 text-sm">
-        <thead className="bg-slate-900/60 text-xs uppercase tracking-wide text-slate-400">
+    <div className="job-table-wrapper">
+      <table className="job-table">
+        <thead className="job-table-header">
           <tr>
-            <th className="px-4 py-3 text-left">Job ID</th>
-            <th className="px-4 py-3 text-left">Job Type</th>
-            <th className="px-4 py-3 text-left">Status</th>
-            <th className="px-4 py-3 text-left">Created At</th>
-            <th className="px-4 py-3 text-right">Actions</th>
+            <th className="job-table-header-cell">Job ID</th>
+            <th className="job-table-header-cell">Job Type</th>
+            <th className="job-table-header-cell">Status</th>
+            <th className="job-table-header-cell">Created At</th>
+            <th className="job-table-header-cell text-right">Actions</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-800 text-slate-100">
+        <tbody>
           {jobs.map((job) => {
             const isRetrying = isRetryingId === job.id;
             const canRetry = job.status === "Failed";
 
             return (
-              <tr key={job.id} className="hover:bg-slate-900/40">
-                <td className="px-4 py-3 font-mono text-xs text-slate-300">
-                  {job.id}
-                </td>
-                <td className="px-4 py-3 capitalize text-slate-200">
-                  {job.type}
-                </td>
-                <td className="px-4 py-3">
+              <tr key={job.id} className="job-table-body-row">
+                <td className="job-id-cell">{job.id}</td>
+                <td className="job-type-cell">{job.type}</td>
+                <td className="job-table-cell">
                   <JobStatusBadge status={job.status} />
                 </td>
-                <td className="px-4 py-3 text-slate-300">
+                <td className="job-created-at-cell">
                   {formatJobCreatedAt(job.createdAt)}
                 </td>
-                <td className="px-4 py-3 text-right">
+                <td className="job-actions-cell">
                   {canRetry ? (
                     <button
                       type="button"
                       onClick={() => onRetry(job.id)}
                       disabled={isRetrying}
-                      className="inline-flex items-center gap-2 rounded-md border border-slate-700 bg-slate-900 px-3 py-1 text-xs font-medium text-slate-100 shadow-sm hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+                      className="retry-button"
                     >
                       {isRetrying && <Spinner size="sm" />}
                       <span>Retry</span>

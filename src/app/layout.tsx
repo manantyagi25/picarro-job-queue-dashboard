@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ReactQueryProvider } from "../utils/react-query-provider";
 import "./globals.css";
+import "../styles/ui.css";
 
 export const metadata: Metadata = {
   title: "Picarro Job Queue Dashboard",
