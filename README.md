@@ -1,165 +1,171 @@
 # Job Queue Dashboard
 
-A React + TypeScript dashboard for operations and SRE teams to monitor background job queues, filter by status, retry failed jobs, and view at-a-glance status summaries—with dark mode and a mock API for development.
+A React + TypeScript dashboard for operations and SRE teams to monitor background job queues, retry failed jobs without engineering intervention, and view at-a-glance status—with dark mode and a mock API.
 
 ---
 
 ## Overview
 
-The **Job Queue Dashboard** gives operations users a single place to see running, queued, failed, and completed jobs. It addresses the need to quickly assess queue health, identify failed jobs, and retry them without switching to other tools. The UI is built for clarity and speed: status badges, filters, sortable columns, and one-click retry with clear feedback (toasts and row highlight).
+The **Job Queue Dashboard** gives operations and SRE users a single place to see running, queued, failed, and completed jobs. It addresses the need to quickly assess queue health, identify failures, and retry them without switching tools or involving engineers. The UI is built for clarity and speed: status badges, filters, sortable columns, one-click retry with clear feedback (toasts and row highlight), and summary cards for quick visibility.
 
 ---
 
 ## Features
 
-Implemented features include:
-
-- **Job queue table** – Table view of all jobs with columns: Job ID, Job Type, Status, Created At, Actions.
-- **Status color badges** – Visual badges (Running, Queued, Failed, Completed) with distinct colors and Lucide icons (e.g. spinner for Running, check for Completed).
-- **Status filtering** – Dropdown to filter jobs by status (All, Running, Queued, Failed, Completed).
-- **Retry failed job** – “Retry” button on failed jobs; triggers `POST /api/jobs/:id/retry`, updates cache, shows success/error toast and brief row highlight.
-- **Loading states** – Initial load shows a skeleton table; refresh and retry show appropriate loading/disabled states.
-- **Error handling** – Initial load error shows “Unable to load jobs” with a Retry button; retry failure shows an error toast.
-- **Empty state** – “No jobs found” when the filtered list is empty.
-- **Column sorting** – Created At column is sortable (asc/desc) with arrow icons.
-- **Status summary cards** – Four cards showing counts for Running, Queued, Failed, and Completed.
-- **Dark mode** – Theme toggle in the sidebar (next-themes); full dark styling for table, cards, and layout.
-- **Skeleton loader** – Table-shaped skeleton with animated placeholders during initial fetch.
-- **Copy job ID** – Copy button next to each job ID using `navigator.clipboard.writeText`.
-- **Icons and animations** – Lucide icons throughout; slow spin on Running badge; row hover and highlight transitions (e.g. `transition-colors duration-300`).
-- **Tests** – Unit tests for `JobStatusBadge` and `JobStatusFilter` (Vitest + React Testing Library).
-- **Deployment** – No deployment configuration (e.g. Vercel/Netlify) is present in the repo; the app can be built and run with `npm run build` and `npm run start`.
-
----
+- View background jobs in a sortable table
+- Filter jobs by status
+- Retry failed jobs
+- Summary cards for quick status overview
+- Copy job ID to clipboard
+- Skeleton loading state
+- Row highlight on retry
+- Dark mode support
+- Mock API with Next.js routes
 
 ## Tech Stack
 
-- **React** (18) – UI components and client state.
-- **TypeScript** – Typed models and props.
-- **Next.js** (14) – App Router, layout, and API routes used as the mock backend.
-- **Tailwind CSS** – Utility-first styling; custom component classes in `@layer components`.
-- **TanStack React Query** – Server state: fetching jobs, caching, and optimistic-style cache updates on retry.
-- **next-themes** – Dark/light theme with `class` strategy and no system preference.
-- **Lucide React** – Icons (e.g. Copy, ArrowUp/ArrowDown, Loader2, CheckCircle2, Moon, Sun).
-- **date-fns** – Not used for display; `toLocaleString` is used in `formatJobCreatedAt` in `src/utils/date.ts`.
-- **Mock API** – Implemented via **Next.js API routes** (`/api/jobs`, `/api/jobs/[id]/retry`) backed by in-memory data in `src/mocks/jobs.ts`. MSW is listed in `package.json` but is not used in the application code.
-- **Testing** – **Vitest** for test runner, **@testing-library/react** and **@testing-library/jest-dom** for component tests; `jsdom` environment.
+| Layer | Choice |
+|-------|--------|
+| **UI** | React 18, TypeScript, Next.js 14 (App Router) |
+| **Styling** | Tailwind CSS, Lucide React, next-themes (dark/light) |
+| **Server state** | TanStack React Query (fetch, cache, cache updates on retry) |
+| **Backend** | Next.js API routes + in-memory mock (`/api/jobs`, `/api/jobs/:id/retry`) |
+| **Dates** | Native `Date#toLocaleString` via `src/utils/date.ts` (no date-fns) |
+| **Testing** | Vitest, React Testing Library, jsdom |
 
 ---
 
 ## Architecture
 
-- **App Router** – Root layout in `src/app/layout.tsx` wraps the app with `ThemeProvider` and `ReactQueryProvider`; main content in `src/app/page.tsx` (client component).
-- **Component structure** – Page composes layout (header, summary, filters, table/empty/error/skeleton) and owns UI state (filter, sort, toast, highlighted row). Job-related UI is split into presentational components under `src/components/jobs/` and layout in `src/components/layout/`.
-- **Server state vs UI state** – **Server state**: job list and its updates live in React Query (query key `["jobs"]`); retry mutation updates the cache in place. **UI state**: status filter, created-at sort direction, toast, highlighted job ID, and load-retry count are React `useState` in the page.
-- **Hooks / services** – `useJobs()` in `src/hooks/useJobs.ts` encapsulates `useQuery` (get jobs) and `useMutation` (retry); `getJobs` and `retryJob` in `src/services/jobsService.ts` call the Next.js API routes.
-- **Mock API design** – In-memory array `MOCK_JOBS` and `updateJobStatus(id, status)` in `src/mocks/jobs.ts`; API route handlers import this and respond with JSON. GET returns the full list; POST retry sets the job’s status to `"Queued"` and returns the updated job.
+### Server state vs UI state
+
+- **Server state** — The job list is the single source of truth in React Query (`queryKey: ["jobs"]`). It is fetched via `getJobs`, refetched on “Refresh data” and on initial-load “Retry.” After a successful retry, the mutation’s `onSuccess` updates the cache with `queryClient.setQueryData`, replacing only the retried job with the updated one (status → `Queued`). The table and summary cards re-render from this cache, so the UI reflects the new state without a full refetch.
+- **UI state** — Status filter, Created At sort direction, toast, highlighted job ID, and load-retry count live in React `useState` on the page. Filtering and sorting are derived in a `useMemo` from `jobsQuery.data`; they are not stored on the server.
+
+
+### Guiding Principles
+
+The implementation prioritizes clear separation of server and UI state, predictable data flow, and responsive user feedback so that operations users can quickly understand job status and safely retry failures without ambiguity.
+
+### Hooks and services
+
+- **`useJobs()`** (`src/hooks/useJobs.ts`) — Encapsulates `useQuery` (jobs list) and `useMutation` (retry). Keeps server state and retry logic in one place and simplifies the page.
+- **`jobsService`** (`src/services/jobsService.ts`) — Thin layer over `fetch` for `GET /api/jobs` and `POST /api/jobs/:id/retry`. Keeps API URLs and response handling out of components.
+
+### Component composition
+
+The main jobs page composes layout (header, summary, filters, table area) and owns all UI state. It delegates job list rendering to `JobTable`, which receives filtered/sorted data and callbacks. Presentational pieces (badges, filter dropdown, summary cards, skeleton) are separate components so they stay modular and testable.
+
+### How retry updates reach the UI
+
+1. User clicks Retry → `retryMutation.mutate(id)`.
+2. `retryJob(id)` calls `POST /api/jobs/:id/retry`; mock updates the job to `Queued` and returns it.
+3. Mutation `onSuccess` runs: `queryClient.setQueryData(["jobs"], ...)` updates the cached list in place.
+4. React Query triggers a re-render; the page’s `filteredJobs` (from `useMemo`) now include the updated job.
+5. Page sets success toast and `highlightedJobId`; after 1.2s the highlight clears. The row shows “Queued” and the Retry button is no longer shown.
 
 ---
 
-## Component Structure
+## Component Architecture
 
-| Component | Responsibility |
-|-----------|----------------|
-| **Layout** | |
-| `Sidebar` | App shell: nav (Jobs Queue), collapse/expand, dark/light toggle, user placeholder. |
-| **Page** | |
-| `page.tsx` | Main jobs page: fetches via `useJobs`, holds filter/sort/toast/highlight state, composes header, summary, filter, and table/empty/error/skeleton; renders custom toast. |
-| **Jobs** | |
-| `JobStatusSummary` | Four cards showing counts per status (Running, Queued, Failed, Completed). |
-| `JobStatusFilter` | Dropdown to filter by status (All or one status). |
-| `JobTable` | Table of jobs: Job ID (with copy), Type, Status badge, Created At, Retry (for Failed). Handles sort toggle, retry loading state, and highlighted row. |
-| `JobStatusBadge` | Badge with status-specific class and icon (e.g. Running with spinner). |
-| `JobTableSkeleton` | Table skeleton with 6 placeholder rows and pulse animation. |
-| **UI** | |
-| `Spinner` | Small loading spinner (sm/md) used in Retry button and elsewhere. |
-| **Providers** | |
-| `ThemeProvider` | Wraps next-themes provider (class, default light). |
-| `ReactQueryProvider` | Wraps QueryClientProvider and React Query Devtools. |
+| Component | Responsibility | Modularity |
+|-----------|----------------|------------|
+| **JobTable** | Renders the jobs table: columns (Job ID with copy, Type, Status, Created At, Actions). Handles sort toggle, retry loading state per row, and highlighted row styling. Uses `JobStatusBadge` for status and an inline Retry button for failed jobs. | Receives `jobs`, callbacks, and UI state as props; no data fetching. |
+| **JobStatusBadge** | Renders a status pill with semantic color and icon (e.g. Running + spinner, Failed + alert, Completed + check). | Pure presentational; single prop `status`. |
+| **JobStatusFilter** | Dropdown to filter by status (All, Running, Queued, Failed, Completed). | Controlled component: `value` + `onChange`. |
+| **JobStatusSummary** | Four summary cards (Running, Queued, Failed, Completed) with counts derived from the job list. | Pure presentational; accepts `jobs` and computes counts internally. |
+| **JobTableSkeleton** | Table-shaped skeleton with 6 placeholder rows and pulse animation during initial load. | Reuses same table structure as `JobTable` for visual consistency. |
+| **Sidebar** | App shell: logo, nav (Jobs Queue), collapse/expand, theme toggle. | Layout-only; no job logic. |
+| **Spinner** | Small loading indicator (sm/md) used in Retry button and elsewhere. | Reusable UI primitive. |
+
+There is no separate `JobRow` component; rows are rendered inside `JobTable` to keep the table and its behavior (retry, highlight, copy) in one place while still delegating status display to `JobStatusBadge`.
 
 ---
 
 ## State Management
 
-- **Server state (jobs list)**  
-  - Fetched with `useQuery({ queryKey: ["jobs"], queryFn: getJobs })`.  
-  - Refetched via “Refresh data” and on initial load error “Retry”.  
-  - After a successful retry, `onSuccess` of the retry mutation calls `queryClient.setQueryData(["jobs"], ...)` and replaces the matching job with the updated one (status set to `"Queued"`), so the table updates without a full refetch.
+- **Server data** — Fetched with `useQuery({ queryKey: ["jobs"], queryFn: getJobs })`. Refetched via “Refresh data” and on initial-load “Retry.” No polling or WebSockets in the current scope.
+- **Filtering and sorting** — Applied client-side in a `useMemo`: filter by `statusFilter`, then sort by `createdAt` (asc/desc). This keeps the implementation simple and avoids backend changes; see Tradeoffs for limits.
+- **Retry mutation** — `useMutation` with `mutationFn: retryJob`. On success, the cache is updated in place so the list and summary cards stay in sync without a refetch.
+- **Toast and highlight** — Local state; toast auto-clears after 3s, highlight after 1.2s. Custom implementation (no toast library) to keep dependencies minimal and behavior explicit.
 
-- **UI state (filters, interactions)**  
-  - **Status filter**: `useState<JobStatusFilterValue>("All")`; applied in a `useMemo` that filters `jobsQuery.data` and then sorts by `createdAt`.  
-  - **Sort**: `useState<"asc" \| "desc">("desc")` for Created At; same `useMemo` applies sort.  
-  - **Toast**: `useState<ToastState>(null)`; set on retry success/error; cleared after 3 seconds.  
-  - **Highlighted row**: `useState<string | null>(null)`; set to the retried job id on success, cleared after 1.2s.  
-  - **Load retry count**: `useState(0)` used to show a different message after the first load-retry attempt.
+---
 
-- **Retry updates in the UI**  
-  - Retry calls `retryMutation.mutate(id)`; on success, the mutation’s `onSuccess` updates the React Query cache and the page shows a success toast and highlights the row. The table re-renders from the updated cache, so the job’s status badge changes to Queued and the Retry button disappears.
+## Design & UX Decisions
+
+- **Status color coding** — Running (blue), Queued (gray), Failed (red), Completed (green) with matching dark-mode variants. Aligns with common mental models and improves quick scanning.
+- **Skeleton loading** — Table-shaped skeleton during initial fetch to avoid layout shift and signal that a table is loading.
+- **Disabled retry during mutation** — Retry button shows a spinner and is disabled while the request is in flight to prevent double submissions and give clear feedback.
+- **Summary cards** — Four cards above the table for quick status visibility without scrolling or filtering.
+- **Row highlight on retry success** — Short green highlight on the retried row reinforces which job was queued for retry.
+- **Subtle animations** — Row hover and highlight use `transition-colors duration-300`; Running badge uses a slow spin for “in progress.”
+- **Dark mode** — next-themes with class-based strategy; full dark styling for table, cards, sidebar, and toasts so the app is usable in low-light environments.
 
 ---
 
 ## API Mocking
 
-The “backend” is implemented with **Next.js API routes** and an in-memory store:
+The backend is implemented with **Next.js API routes** (Pages Router) and an in-memory store:
 
-- **Data** – `src/mocks/jobs.ts` exports a mutable `MOCK_JOBS` array and `updateJobStatus(id, status)`, which finds the job, updates its status, mutates the in-memory list, and returns the updated job.
+- **`src/mocks/jobs.ts`** — Exports mutable `MOCK_JOBS` and `updateJobStatus(id, status)`. Retry sets status to `"Queued"` and returns the updated job.
+- **GET /api/jobs** — Returns the full job list (200) or 405 for non-GET.
+- **POST /api/jobs/:id/retry** — Updates the job to Queued, returns the job (200), or 404/400 for not found or missing id; 405 for non-POST.
 
-- **GET /api/jobs**  
-  - Handler in `src/pages/api/jobs/index.ts`.  
-  - Returns `200` with `MOCK_JOBS` as JSON.  
-  - Responds with `405` for non-GET.
-
-- **POST /api/jobs/:id/retry**  
-  - Handler in `src/pages/api/jobs/[id]/retry.ts`.  
-  - Reads `id` from the route, calls `updateJobStatus(id, "Queued")`.  
-  - Returns `200` with the updated job, `404` if not found, `400` if id missing, `405` for non-POST.
-
-The frontend uses relative URLs: `fetch("/api/jobs")` and `fetch(\`/api/jobs/${id}/retry\`, { method: "POST" })`, so the same app serves both UI and mock API in development and in a production build.
+The app uses relative URLs, so the same process serves both UI and API in development and production build.
 
 ---
 
 ## AI Workflow
 
-This README was generated by analyzing the repository. The project may have been developed with assistance from AI tools (e.g. for scaffolding, components, or tests); the exact tools and prompts are not documented in the repo. Manual decisions evident in the codebase include: using Next.js API routes instead of MSW for the mock API, centralizing server state in React Query with a single `useJobs` hook, and implementing a custom toast and row highlight instead of a toast library.
+AI tools were used as a development assistant for scaffolding, component structure, and tests. Where they accelerated work: initial Next.js + React Query setup, Tailwind and component markup, and test structure for `JobStatusBadge` and `JobStatusFilter`. Manual engineering decisions included: using Next.js API routes instead of MSW for the mock (simpler for a single full-stack app), centralizing server state in a single `useJobs` hook, implementing cache updates on retry instead of refetch-only, and choosing a custom toast and row highlight instead of a third-party toast library. The README and architecture were written and refined by hand to reflect actual code and tradeoffs.
+
+---
+
+## Tradeoffs
+
+- **Mock API vs real backend** — In-memory mock keeps the project self-contained and easy to run; swapping to a real API is a matter of changing `jobsService` and optionally adding auth/env config.
+- **Client-side filtering and sorting** — Simple and correct for small lists; for very large datasets, server-side filtering, sorting, and pagination would be needed.
+- **Cache update vs refetch on retry** — Cache is updated in place so the UI updates immediately and stays consistent with the mutation response; a refetch could be used instead for stronger consistency with the server at the cost of an extra request and possible flash.
+- **No pagination** — In scope, the list is small enough to render in one view; pagination or virtualization would be a natural next step for larger lists.
+- **Single retry at a time** — The UI disables retry while a mutation is pending (and the implementation could be extended to limit concurrency) to avoid overlapping retries and unclear feedback.
+
+---
+
+## Future Improvements
+
+- **Pagination or virtualization** — For large lists, add cursor-based or page-based pagination, or virtualize the table to keep DOM and render cost low.
+- **Real-time updates** — Polling or WebSockets so the dashboard reflects new or updated jobs without manual refresh.
+- **Job detail view** — Expand or modal with full job payload, history, and logs for debugging.
+- **Observability** — Logging and metrics for retries and errors; optional correlation with backend tracing.
+- **Accessibility** — ARIA labels, keyboard navigation, focus management for toasts and retry, and screen-reader-friendly status announcements.
+- **Retry feedback** — Optional “Queued for retry” or similar state in the row until the next refresh or event.
 
 ---
 
 ## Running the Project
 
-1. Install dependencies:
+```bash
+npm install
+npm run dev
+```
 
-   ```bash
-   npm install
-   ```
+Open [http://localhost:3000](http://localhost:3000).
 
-2. Run the development server:
+Production build:
 
-   ```bash
-   npm run dev
-   ```
-
-   Then open [http://localhost:3000](http://localhost:3000) in your browser.
-
-3. (Optional) Production build and run:
-
-   ```bash
-   npm run build
-   npm run start
-   ```
+```bash
+npm run build
+npm run start
+```
 
 ---
 
 ## Testing
 
-Tests are run with **Vitest** and **React Testing Library**; `vitest.setup.ts` imports `@testing-library/jest-dom`. Path alias `@` is resolved to `src` in `vitest.config.ts`.
+Vitest + React Testing Library; `@` alias points to `src`.
 
-- **JobStatusBadge** (`src/components/jobs/__tests__/JobStatusBadge.test.tsx`)  
-  - Renders the status text for Running, Queued, Failed, Completed.  
-  - Applies the correct status class (e.g. `job-status-running`) to the badge element.
-
-- **JobStatusFilter** (`src/components/jobs/__tests__/JobStatusFilter.test.tsx`)  
-  - Renders all options (All, Running, Queued, Failed, Completed) in the combobox.  
-  - Calls `onChange` with the selected value when the user changes the select.
+- **JobStatusBadge** — Renders correct label and status-specific class for Running, Queued, Failed, Completed.
+- **JobStatusFilter** — Renders all options and calls `onChange` with the selected value.
 
 Run tests:
 
@@ -169,39 +175,8 @@ npm test
 
 ---
 
-## Future Improvements
+## Live Demo & Deployment
 
-Realistic next steps that could be added with more time:
+**Live demo:** [https://picarro-job-queue-dashboard.vercel.app/](https://picarro-job-queue-dashboard.vercel.app/)
 
-- **Pagination** – Paginate or virtualize the table for large lists to keep DOM and rendering performant.
-- **Real-time updates** – Polling or WebSockets so the dashboard reflects new or updated jobs without manual refresh.
-- **Accessibility** – ARIA labels, keyboard navigation, focus management for toasts and retry, and screen-reader-friendly status announcements.
-- **Observability** – Logging or metrics for retries and errors; optional integration with backend tracing.
-- **Larger datasets** – Server-side filtering/sorting or cursor-based pagination when the job list grows.
-- **Retry feedback** – Disable or limit concurrent retries; show a “Queued for retry” state in the row until the next poll or event.
-
----
-
-### Live demo
-
-The app is deployed on Vercel here:  
-[https://picarro-job-queue-dashboard.vercel.app/](https://picarro-job-queue-dashboard.vercel.app/)
-
-### Deploying to Vercel
-
-This project is configured as a standard Next.js app, so Vercel can use the default settings.
-
-1. **Connect the repo to Vercel**
-   - Go to [Vercel](https://vercel.com/), import the GitHub repository, and select the default **Next.js** framework preset.
-
-2. **Build & output settings**
-   - Build command: `npm run build` (or `npm run vercel-build`, which is an alias).
-   - Output directory: `.next`
-   - Install command: `npm install` (or `pnpm install`/`yarn install` if you switch package managers).
-
-3. **Environment variables**
-   - No environment variables are required for the current mock-API setup. If you later add real backend integration, configure the necessary variables in Vercel’s **Project Settings → Environment Variables**.
-
-4. **Production deployments**
-   - Every push to the main branch (or whatever branch you configure) will trigger a new production deployment.
-   - Vercel also creates preview deployments for pull requests.
+**Vercel:** Connect the repo, use the default Next.js preset. Build: `npm run build`, output: `.next`. No environment variables required for the current mock API.
