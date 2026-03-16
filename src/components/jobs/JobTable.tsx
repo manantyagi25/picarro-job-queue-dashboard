@@ -2,6 +2,7 @@ import type { Job } from "@/types/job";
 import { formatJobCreatedAt } from "@/utils/date";
 import { JobStatusBadge } from "./JobStatusBadge";
 import { Spinner } from "@/components/ui/Spinner";
+import { Copy } from "lucide-react";
 import "@/styles/job-table.css";
 
 interface JobTableProps {
@@ -51,15 +52,7 @@ export function JobTable({
                       onClick={() => navigator.clipboard?.writeText(job.id)}
                       className="inline-flex h-5 w-5 items-center justify-center rounded hover:bg-slate-100 text-slate-500 hover:text-slate-700"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                        className="h-3.5 w-3.5"
-                      >
-                        <path d="M6.5 2A2.5 2.5 0 0 0 4 4.5v7A2.5 2.5 0 0 0 6.5 14h5A2.5 2.5 0 0 0 14 11.5v-7A2.5 2.5 0 0 0 11.5 2h-5ZM6 4.5A.5.5 0 0 1 6.5 4h5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-5a.5.5 0 0 1-.5-.5v-7Z" />
-                        <path d="M5 6a2 2 0 0 0-2 2v6.5A2.5 2.5 0 0 0 5.5 17h6a2 2 0 0 0 2-2v-1a.75.75 0 0 0-1.5 0v1a.5.5 0 0 1-.5.5h-6A1 1 0 0 1 4.5 14V8A.5.5 0 0 1 5 7.5h1a.75.75 0 0 0 0-1.5H5Z" />
-                      </svg>
+                      <Copy className="h-3.5 w-3.5" />
                     </button>
                   </div>
                 </td>
