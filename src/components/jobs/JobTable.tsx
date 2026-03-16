@@ -59,7 +59,7 @@ export function JobTable({
               <tr
                 key={job.id}
                 className={`job-table-body-row transition-colors duration-300 ${
-                  isHighlighted ? "!bg-green-50" : ""
+                  isHighlighted ? "!bg-green-50 dark:!bg-green-900/40" : ""
                 }`}
               >
                 <td className="job-id-cell">
