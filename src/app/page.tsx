@@ -23,12 +23,24 @@ export default function JobsPage() {
   const [loadRetryCount, setLoadRetryCount] = useState(0);
   const [toast, setToast] = useState<ToastState>(null);
   const [highlightedJobId, setHighlightedJobId] = useState<string | null>(null);
+  const [createdAtSortDirection, setCreatedAtSortDirection] = useState<
+    "asc" | "desc"
+  >("desc");
 
   const filteredJobs = useMemo(() => {
     if (!jobsQuery.data) return [];
-    if (statusFilter === "All") return jobsQuery.data;
-    return jobsQuery.data.filter((job) => job.status === statusFilter);
-  }, [jobsQuery.data, statusFilter]);
+
+    const base =
+      statusFilter === "All"
+        ? jobsQuery.data
+        : jobsQuery.data.filter((job) => job.status === statusFilter);
+
+    return [...base].sort((a, b) => {
+      const aTime = new Date(a.createdAt).getTime();
+      const bTime = new Date(b.createdAt).getTime();
+      return createdAtSortDirection === "asc" ? aTime - bTime : bTime - aTime;
+    });
+  }, [jobsQuery.data, statusFilter, createdAtSortDirection]);
 
   useEffect(() => {
     if (!toast) return;
@@ -56,6 +68,10 @@ export default function JobsPage() {
         setToast({ type: "error", message: "Retry failed — please try again" });
       }
     });
+  };
+
+  const handleToggleCreatedAtSort = () => {
+    setCreatedAtSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
   };
 
   const showInitialSpinner = jobsQuery.isLoading && !jobsQuery.isFetched;
@@ -94,6 +110,8 @@ export default function JobsPage() {
         isRetryingId={retryMutation.variables ?? null}
         onRetry={handleRetryJob}
         highlightedJobId={highlightedJobId}
+        createdAtSortDirection={createdAtSortDirection}
+        onToggleCreatedAtSort={handleToggleCreatedAtSort}
       />
     );
   }

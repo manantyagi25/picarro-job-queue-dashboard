@@ -2,7 +2,7 @@ import type { Job } from "@/types/job";
 import { formatJobCreatedAt } from "@/utils/date";
 import { JobStatusBadge } from "./JobStatusBadge";
 import { Spinner } from "@/components/ui/Spinner";
-import { Copy } from "lucide-react";
+import { Copy, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import "@/styles/job-table.css";
 
 interface JobTableProps {
@@ -10,13 +10,17 @@ interface JobTableProps {
   isRetryingId?: string | null;
   onRetry: (id: string) => void;
   highlightedJobId?: string | null;
+  createdAtSortDirection: "asc" | "desc";
+  onToggleCreatedAtSort: () => void;
 }
 
 export function JobTable({
   jobs,
   isRetryingId,
   onRetry,
-  highlightedJobId
+  highlightedJobId,
+  createdAtSortDirection,
+  onToggleCreatedAtSort
 }: JobTableProps) {
   return (
     <div className="job-table-wrapper">
@@ -26,7 +30,22 @@ export function JobTable({
             <th className="job-table-header-cell">Job ID</th>
             <th className="job-table-header-cell">Job Type</th>
             <th className="job-table-header-cell">Status</th>
-            <th className="job-table-header-cell">Created At</th>
+            <th className="job-table-header-cell">
+              <button
+                type="button"
+                onClick={onToggleCreatedAtSort}
+                className="inline-flex items-center gap-1 text-slate-600 hover:text-slate-900"
+              >
+                <span>Created At</span>
+                {createdAtSortDirection === "asc" ? (
+                  <ArrowUp className="h-3 w-3" />
+                ) : createdAtSortDirection === "desc" ? (
+                  <ArrowDown className="h-3 w-3" />
+                ) : (
+                  <ArrowUpDown className="h-3 w-3" />
+                )}
+              </button>
+            </th>
             <th className="job-table-header-cell text-right">Actions</th>
           </tr>
         </thead>
