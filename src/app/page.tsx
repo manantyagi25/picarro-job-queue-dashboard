@@ -7,6 +7,7 @@ import {
   type JobStatusFilterValue
 } from "@/components/jobs/JobStatusFilter";
 import { JobTable } from "@/components/jobs/JobTable";
+import { JobTableSkeleton } from "@/components/jobs/JobTableSkeleton";
 import { JobStatusSummary } from "@/components/jobs/JobStatusSummary";
 import { Spinner } from "@/components/ui/Spinner";
 
@@ -63,12 +64,7 @@ export default function JobsPage() {
   let body: JSX.Element | null = null;
 
   if (showInitialSpinner) {
-    body = (
-      <div className="flex flex-col items-center justify-center gap-3 py-16">
-        <Spinner />
-        <p className="metadata-text">Loading jobs…</p>
-      </div>
-    );
+    body = <JobTableSkeleton />;
   } else if (showLoadError) {
     body =
       loadRetryCount === 0 ? (
