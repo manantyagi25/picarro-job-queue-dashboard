@@ -10,6 +10,30 @@ The **Job Queue Dashboard** gives operations and SRE users a single place to see
 
 ---
 
+## Screenshots
+
+### Dashboard Expanded in Light Mode
+
+![Screenshot1](./public/screenshots/expanded_light.jpg)
+
+### Dashboard Collapsed in Light Mode
+
+![Screenshot2](./public/screenshots/collapsed_light.jpg)
+
+### Dashboard Expanded in Dark Mode
+
+![Screenshot3](./public/screenshots/expanded_dark.jpg)
+
+### Dashboard Collapsed in Dark Mode
+
+![Screenshot4](./public/screenshots/collapsed_dark.jpg)
+
+---
+
+## Live Demo
+
+**Live demo:** [https://picarro-job-queue-dashboard.vercel.app/](https://picarro-job-queue-dashboard.vercel.app/)
+
 ## Features
 
 - View background jobs in a sortable table
@@ -175,8 +199,6 @@ npm test
 
 ---
 
-## Live Demo & Deployment
-
-**Live demo:** [https://picarro-job-queue-dashboard.vercel.app/](https://picarro-job-queue-dashboard.vercel.app/)
+## Deployment
 
 **Vercel:** Connect the repo, use the default Next.js preset. Build: `npm run build`, output: `.next`. No environment variables required for the current mock API.
