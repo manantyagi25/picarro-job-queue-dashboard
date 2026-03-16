@@ -46,18 +46,13 @@ type NavItem = {
       }
      >
       <div className="flex h-16 items-center justify-between px-4 border-b border-slate-200 dark:border-slate-800">
-         <div className="flex items-center gap-3">
-          <div className="h-9 w-9 rounded-md bg-slate-200 dark:bg-slate-700" />
-           {!collapsed && (
-             <div className="flex flex-col">
-               <span className="text-sm font-semibold text-slate-900 dark:text-slate-50">
-                 Client Logo
-               </span>
-               <span className="text-xs text-slate-500 dark:text-slate-400">
-                 Placeholder
-               </span>
-             </div>
-           )}
+         <div className="flex items-center gap-3 min-w-0">
+          <img
+            src="/images/picarro-inc-logo-vector.svg"
+            alt="Picarro"
+            className="h-40 w-auto shrink-0 object-contain dark:invert"
+          />
+           
          </div>
        </div>
 
