@@ -21,6 +21,7 @@ export default function JobsPage() {
     useState<JobStatusFilterValue>("All");
   const [loadRetryCount, setLoadRetryCount] = useState(0);
   const [toast, setToast] = useState<ToastState>(null);
+  const [highlightedJobId, setHighlightedJobId] = useState<string | null>(null);
 
   const filteredJobs = useMemo(() => {
     if (!jobsQuery.data) return [];
@@ -45,6 +46,10 @@ export default function JobsPage() {
     retryMutation.mutate(id, {
       onSuccess: () => {
         setToast({ type: "success", message: "Job queued for retry" });
+        setHighlightedJobId(id);
+        setTimeout(() => {
+          setHighlightedJobId((current) => (current === id ? null : current));
+        }, 1200);
       },
       onError: () => {
         setToast({ type: "error", message: "Retry failed — please try again" });
@@ -92,6 +97,7 @@ export default function JobsPage() {
         jobs={filteredJobs}
         isRetryingId={retryMutation.variables ?? null}
         onRetry={handleRetryJob}
+        highlightedJobId={highlightedJobId}
       />
     );
   }
