@@ -9,7 +9,6 @@ import {
 import { JobTable } from "@/components/jobs/JobTable";
 import { JobTableSkeleton } from "@/components/jobs/JobTableSkeleton";
 import { JobStatusSummary } from "@/components/jobs/JobStatusSummary";
-import { Spinner } from "@/components/ui/Spinner";
 
 type ToastState =
   | { type: "success"; message: string }
@@ -18,39 +17,10 @@ type ToastState =
 
 export default function JobsPage() {
   const { jobsQuery, retryMutation } = useJobs();
-  const [statusFilter, setStatusFilter] =
-    useState<JobStatusFilterValue>("All");
-  const [loadRetryCount, setLoadRetryCount] = useState(0);
+  const [statusFilter, setStatusFilter] = useState<JobStatusFilterValue>("All");
   const [toast, setToast] = useState<ToastState>(null);
   const [highlightedJobId, setHighlightedJobId] = useState<string | null>(null);
-  const [createdAtSortDirection, setCreatedAtSortDirection] = useState<
-    "asc" | "desc"
-  >("desc");
-  const [now, setNow] = useState<number>(() => Date.now());
-
-  const lastUpdatedLabel = useMemo(() => {
-    if (!jobsQuery.dataUpdatedAt) return "Never updated";
-    const diffMs = now - jobsQuery.dataUpdatedAt;
-    const diffSeconds = Math.floor(diffMs / 1000);
-    const diffMinutes = Math.floor(diffSeconds / 60);
-    const diffHours = Math.floor(diffMinutes / 60);
-    const diffDays = Math.floor(diffHours / 24);
-
-    if (diffSeconds < 10) return "just now";
-    if (diffSeconds < 60) return `${diffSeconds} seconds ago`;
-    if (diffMinutes < 60)
-      return `${diffMinutes} minute${diffMinutes === 1 ? "" : "s"} ago`;
-    if (diffHours < 24)
-      return `${diffHours} hour${diffHours === 1 ? "" : "s"} ago`;
-    return `${diffDays} day${diffDays === 1 ? "" : "s"} ago`;
-  }, [jobsQuery.dataUpdatedAt, now]);
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      setNow(Date.now());
-    }, 30000);
-    return () => clearInterval(id);
-  }, []);
+  const [createdAtSortDirection, setCreatedAtSortDirection] = useState<"asc" | "desc">("desc");
 
   const filteredJobs = useMemo(() => {
     if (!jobsQuery.data) return [];
@@ -74,7 +44,6 @@ export default function JobsPage() {
   }, [toast]);
 
   const handleRetryLoad = () => {
-    setLoadRetryCount((count) => count + 1);
     jobsQuery.refetch();
   };
 
@@ -108,7 +77,6 @@ export default function JobsPage() {
     body = <JobTableSkeleton />;
   } else if (showLoadError) {
     body =
-      loadRetryCount === 0 ? (
         <div className="flex flex-col items-center justify-center gap-3 py-16">
           <p className="metadata-text">Unable to load jobs.</p>
           <button
@@ -119,13 +87,6 @@ export default function JobsPage() {
             Retry
           </button>
         </div>
-      ) : (
-        <div className="flex flex-col items-center justify-center gap-3 py-16">
-          <p className="metadata-text">
-            Unable to load jobs — please try again later.
-          </p>
-        </div>
-      );
   } else if (filteredJobs.length === 0) {
     body = <div className="empty-state">No jobs found</div>;
   } else {
@@ -161,9 +122,6 @@ export default function JobsPage() {
               >
                 {jobsQuery.isFetching ? "Refreshing…" : "Refresh data"}
               </button>
-              {/* <p className="text-[11px] italic text-slate-500 dark:text-slate-400 whitespace-nowrap">
-                Last updated {lastUpdatedLabel}
-              </p> */}
             </div>
           </div>
         </header>
